@@ -1,10 +1,11 @@
 package event
 
 import (
-	cf "ebanx.api/account/domain/use_cases"
-	gin "github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+
+	cf "ebanx.api/account/domain/use_cases"
+	gin "github.com/gin-gonic/gin"
 )
 
 func EventHandler(c *gin.Context) {
@@ -33,12 +34,14 @@ func DepositHandler(body EventRequestBody, c *gin.Context) {
 	id := body.Destination
 	ammount := body.Amount
 
-	err := cf.ChangeFunds(id, ammount)
-	if err != nil {
-		log.Println("[DepositHandler] - Error: ", err)
-		c.JSON(http.StatusBadRequest, 0)
+	response := cf.ChangeFunds(id, ammount)
+
+	if response["error"] != nil {
+		log.Println("[DepositHandler] - Error: ", response["error"])
+		c.JSON(http.StatusNotFound, 0)
+		return
 	}
-	c.JSON(http.StatusCreated, map[string]map[string]any{"destination": {"id": id, "balance": ammount}})
+	c.JSON(http.StatusCreated, map[string]map[string]any{"destination": {"id": id, "balance": response["ammount"]}})
 }
 
 func WithdrawHandler(body EventRequestBody, c *gin.Context) {

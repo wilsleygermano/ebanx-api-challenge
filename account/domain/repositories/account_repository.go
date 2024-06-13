@@ -14,9 +14,9 @@ func (ar *AccountRepository) GetAllAccounts() []am.Account {
 	return datasource.GetAllAccounts()
 }
 
-func (ar *AccountRepository) AddAccount(account am.Account) {
+func (ar *AccountRepository) AddAccount(account am.Account) am.Account{
 	datasource := ar.GetDataSourceInstance()
-	datasource.WriteAccount(account)
+	return datasource.WriteAccount(account)
 }
 
 func (ar *AccountRepository) ResetAccounts() {
@@ -26,4 +26,9 @@ func (ar *AccountRepository) ResetAccounts() {
 
 func (ar *AccountRepository) GetDataSourceInstance() *ads.AccountsDataSource {
     return ads.GetInstance()
+}
+
+func (ar *AccountRepository) GetAccountByID(id string) am.Account {
+	datasource := ar.GetDataSourceInstance()
+	return datasource.GetAccountByID(id)
 }
