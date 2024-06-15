@@ -9,5 +9,7 @@ import (
 
 func ResetHandler(c *gin.Context) {
 	log.Println("[ResetHandler] - Executing")
-	c.JSON(http.StatusOK, 0)
+	// the answer should be
+	// 200 OK
+	c.String(http.StatusOK, "OK")
 }
