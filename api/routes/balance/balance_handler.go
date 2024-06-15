@@ -15,5 +15,5 @@ func BalanceHandler(c *gin.Context) {
 		c.JSON(http.StatusNotFound, balance["ammount"])
 		return
 	}
-	c.JSON(http.StatusOK, balance)
+	c.JSON(http.StatusOK, balance["ammount"])
 }
