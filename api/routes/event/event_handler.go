@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	cf "ebanx.api/account/domain/use_cases"
+	uc "ebanx.api/account/domain/use_cases"
 	gin "github.com/gin-gonic/gin"
 )
 
@@ -34,7 +34,7 @@ func DepositHandler(body EventRequestBody, c *gin.Context) {
 	id := body.Destination
 	ammount := body.Amount
 
-	response := cf.ChangeFunds(id, ammount)
+	response := uc.ChangeFunds(id, ammount)
 
 	if response["error"] != nil {
 		log.Println("[DepositHandler] - Error: ", response["error"])
@@ -46,8 +46,21 @@ func DepositHandler(body EventRequestBody, c *gin.Context) {
 
 func WithdrawHandler(body EventRequestBody, c *gin.Context) {
 	log.Println("[WithdrawHandler] - Executing")
-	// TODO: implement this
-	c.JSON(http.StatusNotImplemented, map[string]any{"error": "not implemented"})
+	// POST /event {"type":"withdraw", "origin":"100", "amount":5}
+
+	// 201 {"origin": {"id":"100", "balance":15}}
+
+	id := body.Origin
+	ammount := body.Amount
+
+	response := uc.WithdrawFunds(id, ammount)
+
+	if response["error"] != nil {
+		log.Println("[WithdrawHandler] - Error: ", response["error"])
+		c.JSON(http.StatusNotFound, 0)
+		return
+	}
+	c.JSON(http.StatusCreated, map[string]map[string]any{"origin": {"id": id, "balance": response["ammount"]}})
 }
 
 func TransferHandler(body EventRequestBody, c *gin.Context) {

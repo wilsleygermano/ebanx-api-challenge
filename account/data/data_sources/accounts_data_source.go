@@ -23,18 +23,18 @@ func GetInstance() *AccountsDataSource {
 }
 
 func (ds *AccountsDataSource) GetAllAccounts() []am.Account {
-    ds.mu.Lock()
-    defer ds.mu.Unlock()
-    return ds.accounts
+	ds.mu.Lock()
+	defer ds.mu.Unlock()
+	return ds.accounts
 }
 
-func (ds *AccountsDataSource) WriteAccount(account am.Account) am.Account{
+func (ds *AccountsDataSource) WriteAccount(account am.Account) am.Account {
 	ds.mu.Lock()
 	defer ds.mu.Unlock()
 	// first we check if the account already exists
 	for i, acc := range ds.accounts {
 		if acc.ID == account.ID {
-			ds.accounts[i].Balance += account.Balance
+			ds.accounts[i].Balance = account.Balance
 			return ds.accounts[i]
 		}
 	}

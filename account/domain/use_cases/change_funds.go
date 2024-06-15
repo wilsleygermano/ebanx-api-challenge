@@ -1,13 +1,10 @@
 package usecases
 
 import (
-	am "ebanx.api/account/data/models"
 	ar "ebanx.api/account/domain/repositories"
 )
 
 func ChangeFunds(id string, ammount float64) map[string]any {
-	repository := &ar.AccountRepository{}
-
 	if id == "" {
 		return map[string]any{
 			"error":   true,
@@ -15,9 +12,15 @@ func ChangeFunds(id string, ammount float64) map[string]any {
 		}
 	}
 
-	account := am.Account{
-		ID:      id,
-		Balance: ammount,
+	repository := &ar.AccountRepository{}
+	// get account by id
+	account := repository.GetAccountByID(id)
+
+	if account.ID == "" {
+		account.ID = id
+		account.Balance = ammount
+	} else {
+		account.Balance += ammount
 	}
 
 	account = repository.AddAccount(account)

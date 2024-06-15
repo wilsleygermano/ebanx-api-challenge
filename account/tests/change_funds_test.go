@@ -1,10 +1,9 @@
 package tests
 
 import (
-	repo "ebanx.api/account/domain/repositories"
 	cf "ebanx.api/account/domain/use_cases"
 	"testing"
-	"sync"
+	tools "ebanx.api/account/tests/tools"
 )
 
 func TestChangeFundsWithoutID(t *testing.T) {
@@ -16,35 +15,25 @@ func TestChangeFundsWithoutID(t *testing.T) {
 
 func TestCreateAnAccount(t *testing.T) {
 	err := cf.ChangeFunds("123", 10.0)
-	if err != nil {
+	if err["error"] != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 }
 
-var instance *repo.AccountRepository
-var once sync.Once
-
-func GetInstance() *repo.AccountRepository {
-    once.Do(func() {
-        instance = &repo.AccountRepository{}
-    })
-    return instance
-}
-
 func ResetAccounts() {
-	repository := GetInstance()
+	repository := tools.GetInstance()
 	repository.ResetAccounts()
 }
 
 func TestIncreaseBalance(t *testing.T) {
 	ResetAccounts()
-	repository := GetInstance()
+	repository := tools.GetInstance()
 	err := cf.ChangeFunds("123", 10.0)
-	if err != nil {
+	if err["error"] != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 	err2 := cf.ChangeFunds("123", 10.0)
-	if err2 != nil {
+	if err2["error"] != nil {
 		t.Fatalf("Expected no error, got %v", err2)
 	}
 	accounts := repository.GetAllAccounts()
