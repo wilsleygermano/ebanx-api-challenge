@@ -46,9 +46,6 @@ func DepositHandler(body EventRequestBody, c *gin.Context) {
 
 func WithdrawHandler(body EventRequestBody, c *gin.Context) {
 	log.Println("[WithdrawHandler] - Executing")
-	// POST /event {"type":"withdraw", "origin":"100", "amount":5}
-
-	// 201 {"origin": {"id":"100", "balance":15}}
 
 	id := body.Origin
 	ammount := body.Amount
@@ -65,6 +62,16 @@ func WithdrawHandler(body EventRequestBody, c *gin.Context) {
 
 func TransferHandler(body EventRequestBody, c *gin.Context) {
 	log.Println("[TransferHandler] - Executing")
-	//TODO: implement this
-	c.JSON(http.StatusNotImplemented, map[string]any{"error": "not implemented"})
+	origin := body.Origin
+	destination := body.Destination
+	ammount := body.Amount
+
+	response := uc.TransferFunds(origin, destination, ammount)
+
+	if response["error"] != nil {
+		log.Println("[TransferHandler] - Error: ", response["error"])
+		c.JSON(http.StatusNotFound, 0)
+		return
+	}
+	c.JSON(http.StatusCreated, response)
 }
