@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// StartServer starts the server
 func main() {
 	r := gin.Default()
 	r.POST("/event", e.EventHandler)
